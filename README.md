@@ -2,7 +2,7 @@
 
 Read-only REST API (Go + [Echo](https://echo.labstack.com/)) over a dataset of
 railway tracks and the signals along them. The source data is loaded into memory
-once at startup — no external database.
+once at startup - no external database.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ crosstech-test-data.json    source dataset
 ```
 
 Request flow: `main` loads + normalizes the JSON into `store`, then `handlers`
-serve read-only queries against the indexed maps. No locking is needed — the
+serve read-only queries against the indexed maps. No locking is needed - the
 store is built once and only read.
 
 ## Run
@@ -53,20 +53,20 @@ appropriate status (400 invalid param, 404 not found).
 
 ## Key design decisions
 
-- **Data is quirky** — extracted via Python, so the same `signal_id` recurs
+- **Data is quirky** - extracted via Python, so the same `signal_id` recurs
   across tracks with a *scrambled* `elr` (anagram noise, e.g. signal 453 shows
   `LPC5`/`PCL5`/`PLC5`) and a differing `mileage`. These are therefore treated
-  as **occurrence-level** values, exposed only on `/tracks/:id/signals` — never
+  as **occurrence-level** values, exposed only on `/tracks/:id/signals` - never
   as canonical signal attributes.
-- **Normalized model** — a canonical `Signal` is just `{ signal_id, signal_name? }`,
+- **Normalized model** - a canonical `Signal` is just `{ signal_id, signal_name? }`,
   deduplicated by id. `signal_name` is nullable (106 signals are permanently
   unnamed) so it is omitted from JSON rather than emitted as `""`. Tracks
   reference signals by id only, avoiding duplication of signal data per track.
-- **Load-once, fail-fast** — the dataset is parsed at startup. A missing/malformed
+- **Load-once, fail-fast** - the dataset is parsed at startup. A missing/malformed
   *file* is fatal; individual malformed *records* (missing id/source/target,
   duplicate `track_id`) are skipped with a logged warning so one bad row cannot
   take down the API.
-- **In-memory indexing** — maps for `track_id`, `signal_id`, track↔signal and
+- **In-memory indexing** - maps for `track_id`, `signal_id`, track↔signal and
   signal↔track give O(1) lookups; sorted slices give deterministic list output.
 
 ## Notes
