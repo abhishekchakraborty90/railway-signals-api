@@ -71,6 +71,5 @@ appropriate status (400 invalid param, 404 not found).
 
 ## Notes
 
-- Frontend (React/Vite/Tailwind/TanStack Query/Zod) from the brief is **not**
-  included — backend only, per scope.
+- Backend only.
 - The permissive CORS middleware lets a separately-hosted frontend call the API.
